@@ -2,7 +2,7 @@
  * @Author: mrrs878@foxmail.com
  * @Date: 2021-07-22 17:22:18
  * @LastEditors: mrrs878@foxmail.com
- * @LastEditTime: 2021-07-22 18:02:44
+ * @LastEditTime: 2021-07-23 11:09:40
  * @FilePath: \mindmap\.eslintrc.js
  */
 module.exports = {
@@ -36,6 +36,7 @@ module.exports = {
     'react/react-in-jsx-scope': 0,
     'no-param-reassign': 0,
     '@typescript-eslint/space-infix-ops': 0,
+    'react/no-this-in-sfc': 0,
   },
   overrides: [
     {
