@@ -2,7 +2,7 @@
  * @Author: mrrs878@foxmail.com
  * @Date: 2021-07-22 15:32:33
  * @LastEditors: mrrs878@foxmail.com
- * @LastEditTime: 2021-07-23 14:23:16
+ * @LastEditTime: 2021-07-27 23:21:54
  * @FilePath: \mindmap\src\App.tsx
  */
 import * as d3 from 'd3';
@@ -12,6 +12,25 @@ import 'antd/dist/antd.css';
 
 const data = require('./flare-2.json');
 
+function wrapWord(text: string, lineLength = 100, abs = 5) {
+  let res = '';
+  let line = '';
+  const lineHeight = 14;
+  const words = text.split(' ');
+  let lineNumber = 0;
+  for (let i = 0; i < words.length; i += 1) {
+    if ((line + words[i]).length > lineLength + abs) {
+      line = `<tspan x=0 y=${lineHeight * lineNumber}>${line}</tspan>`;
+      res += line;
+      line = words[i];
+      lineNumber += 1;
+    } else line += ` ${words[i]}`;
+  }
+
+  res += `<tspan x=0 y=${lineHeight * lineNumber}>${line}</tspan>`;
+  return res;
+}
+
 function App() {
   const editNodeRef = useRef<SVGTextElement>();
   const [editNodeModalF, setEditNodeModalF] = useState(false);
@@ -19,7 +38,7 @@ function App() {
 
   const onEditNode = () => {
     if (editNodeRef.current) {
-      editNodeRef.current.innerHTML = editNodeModalV;
+      editNodeRef.current.innerHTML = wrapWord(editNodeModalV, 30);
       setEditNodeModalF(false);
     }
   };
@@ -111,16 +130,15 @@ function App() {
       nodeEnter.append('text')
         .attr('dy', '0.31em')
         .attr('x', (d: t) => (d.data._children ? -6 : 6))
+        .html((d: t) => wrapWord(d.data.name, 30))
         .attr('text-anchor', (d: t) => (d.data._children ? 'end' : 'start'))
-        .text((d: t) => d.data.name)
         .on('dblclick', function onDBLClick(e, d) {
           editNodeRef.current = this;
           setEditNodeModalF(true);
           setEditNodeModalV(d.data.name);
         })
         .lower()
-        .attr('stroke-linejoin', 'round')
-        .attr('stroke-width', 3);
+        .attr('stroke-linejoin', 'round');
 
       nodeEnter.append('text')
         .attr('dy', '0.32em')
@@ -189,7 +207,10 @@ function App() {
         onCancel={() => setEditNodeModalF(false)}
         onOk={onEditNode}
       >
-        <Input value={editNodeModalV} onChange={(e) => setEditNodeModalV(e.currentTarget.value)} />
+        <Input.TextArea
+          value={editNodeModalV}
+          onChange={(e) => setEditNodeModalV(e.currentTarget.value)}
+        />
       </Modal>
     </>
   );
