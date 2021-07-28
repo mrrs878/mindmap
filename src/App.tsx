@@ -2,7 +2,7 @@
  * @Author: mrrs878@foxmail.com
  * @Date: 2021-07-22 15:32:33
  * @LastEditors: mrrs878@foxmail.com
- * @LastEditTime: 2021-07-27 23:21:54
+ * @LastEditTime: 2021-07-28 21:09:01
  * @FilePath: \mindmap\src\App.tsx
  */
 import * as d3 from 'd3';
@@ -15,19 +15,19 @@ const data = require('./flare-2.json');
 function wrapWord(text: string, lineLength = 100, abs = 5) {
   let res = '';
   let line = '';
-  const lineHeight = 14;
+  const lineHeight = 12;
   const words = text.split(' ');
   let lineNumber = 0;
   for (let i = 0; i < words.length; i += 1) {
     if ((line + words[i]).length > lineLength + abs) {
-      line = `<tspan x=0 y=${lineHeight * lineNumber}>${line}</tspan>`;
+      line = `<tspan x=5 y=${lineHeight * lineNumber}>${line}</tspan>`;
       res += line;
       line = words[i];
       lineNumber += 1;
     } else line += ` ${words[i]}`;
   }
 
-  res += `<tspan x=0 y=${lineHeight * lineNumber}>${line}</tspan>`;
+  res += `<tspan x=5 y=${lineHeight * lineNumber}>${line}</tspan>`;
   return res;
 }
 
@@ -63,7 +63,7 @@ function App() {
     const tree = d3.tree().nodeSize([dx, dy]);
 
     const margin = ({
-      top: 100, right: 120, bottom: 10, left: 100,
+      top: 100, right: 120, bottom: 10, left: 200,
     });
 
     root.x0 = dy / 2;
@@ -79,6 +79,7 @@ function App() {
       .append('svg')
       .attr('viewBox', `${[-margin.left, -margin.top, width, dx]}`)
       .style('font', '10px sans-serif')
+      .style('overflow', 'inherit')
       .style('user-select', 'none');
 
     const gLink = svg.append('g')
@@ -128,9 +129,9 @@ function App() {
         .attr('stroke-width', 10);
 
       nodeEnter.append('text')
-        .attr('dy', '0.31em')
-        .attr('x', (d: t) => (d.data._children ? -6 : 6))
+        .attr('x', (d: t) => (d.data._children ? -40 : 6))
         .html((d: t) => wrapWord(d.data.name, 30))
+        .attr('dominant-baseline', 'middle')
         .attr('text-anchor', (d: t) => (d.data._children ? 'end' : 'start'))
         .on('dblclick', function onDBLClick(e, d) {
           editNodeRef.current = this;
