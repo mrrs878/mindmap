@@ -2,7 +2,7 @@
  * @Author: mrrs878@foxmail.com
  * @Date: 2021-07-22 15:32:33
  * @LastEditors: mrrs878@foxmail.com
- * @LastEditTime: 2021-07-28 21:09:01
+ * @LastEditTime: 2021-07-29 10:56:30
  * @FilePath: \mindmap\src\App.tsx
  */
 import * as d3 from 'd3';
@@ -20,14 +20,14 @@ function wrapWord(text: string, lineLength = 100, abs = 5) {
   let lineNumber = 0;
   for (let i = 0; i < words.length; i += 1) {
     if ((line + words[i]).length > lineLength + abs) {
-      line = `<tspan x=5 y=${lineHeight * lineNumber}>${line}</tspan>`;
+      line = `<tspan x=${lineNumber === 0 ? 2 : -10} y=${lineHeight * lineNumber}>${line}</tspan>`;
       res += line;
       line = words[i];
       lineNumber += 1;
     } else line += ` ${words[i]}`;
   }
 
-  res += `<tspan x=5 y=${lineHeight * lineNumber}>${line}</tspan>`;
+  res += `<tspan x=${lineNumber === 0 ? 2 : -10} y=${lineHeight * lineNumber}>${line}</tspan>`;
   return res;
 }
 
@@ -125,13 +125,13 @@ function App() {
 
       nodeEnter.append('circle')
         .attr('r', 5)
-        .attr('fill', (d: t) => (d.data._children ? 'rgb(254, 67, 101)' : 'rgb(160, 191, 124)'))
+        .attr('fill', (d: t) => (d.data._children ? 'rgb(254, 67, 101)' : 'rgba(0, 0, 0, 0)'))
         .attr('stroke-width', 10);
 
       nodeEnter.append('text')
-        .attr('x', (d: t) => (d.data._children ? -40 : 6))
+        .attr('dx', (d: t) => (d.data._children ? -10 : 0))
         .html((d: t) => wrapWord(d.data.name, 30))
-        .attr('dominant-baseline', 'middle')
+        .attr('dominant-baseline', (d: t) => (d.data._children ? 'middle' : 'text-after-edge'))
         .attr('text-anchor', (d: t) => (d.data._children ? 'end' : 'start'))
         .on('dblclick', function onDBLClick(e, d) {
           editNodeRef.current = this;
